@@ -1,0 +1,141 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" debug="true">
+
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="target-densitydpi=device-dpi" />
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+     <input type="text" id="demo" name="demo"/>
+    <ul id="messages"></ul>
+    
+    <form action="">
+    <!--   <input id="m" autocomplete="off" /><button>Send</button> --> 
+	
+    </form>
+         
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+      
+    <script type="text/javascript">
+    function init(param)
+               {
+                     // alert(param);
+                      AndroidFunction.showToast(param);
+               } 
+    function insertToDB(winNumber , tokNumber)
+    {
+        //alert("sfsac");
+          AndroidFunction.showTokenDetails(winNumber ,tokNumber );
+    } 
+    </script>
+
+    <script>
+        var globaldata=0;
+        var nVer = navigator.appVersion;
+        var nAgt = navigator.userAgent;
+        var browserName  = navigator.appName;
+        var fullVersion  = ''+parseFloat(navigator.appVersion); 
+        var majorVersion = parseInt(navigator.appVersion,10);
+        var nameOffset,verOffset,ix;
+        
+
+        // In Opera, the true version is after "Opera" or after "Version"
+        if ((verOffset=nAgt.indexOf("OPR"))!=-1) {
+           browserName = "Opera";
+           fullVersion = nAgt.substring(verOffset+6);
+           if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+             fullVersion = nAgt.substring(verOffset+8);
+        }
+        // In MSIE, the true version is after "MSIE" in userAgent
+        else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+           browserName = "Microsoft Internet Explorer";
+           fullVersion = nAgt.substring(verOffset+5);
+        }
+        // In Chrome, the true version is after "Chrome" 
+        else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+           browserName = "Chrome";
+           fullVersion = nAgt.substring(verOffset+7);
+        }
+        // In Safari, the true version is after "Safari" or after "Version" 
+        else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+           browserName = "Safari";
+           fullVersion = nAgt.substring(verOffset+7);
+           if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+             fullVersion = nAgt.substring(verOffset+8);
+        }
+        // In Firefox, the true version is after "Firefox" 
+        else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+            browserName = "Firefox";
+            fullVersion = nAgt.substring(verOffset+8);
+        }
+        // In most other browsers, "name/version" is at the end of userAgent 
+        else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < (verOffset=nAgt.lastIndexOf('/')) ) {
+            browserName = nAgt.substring(nameOffset,verOffset);
+            fullVersion = nAgt.substring(verOffset+1);
+            if (browserName.toLowerCase()==browserName.toUpperCase()) {
+               browserName = navigator.appName;
+            }
+        }
+        // trim the fullVersion string at semicolon/space if present
+        if ((ix=fullVersion.indexOf(";"))!=-1)
+            fullVersion=fullVersion.substring(0,ix);
+        if ((ix=fullVersion.indexOf(" "))!=-1)
+            fullVersion=fullVersion.substring(0,ix);
+
+        majorVersion = parseInt(''+fullVersion,10);
+        if (isNaN(majorVersion)) {
+            fullVersion  = ''+parseFloat(navigator.appVersion); 
+            majorVersion = parseInt(navigator.appVersion,10);
+        }
+        
+        var appName = self.navigator.appCodeName;
+        //var socket = io.connect('http://localhost');
+        var socket = io();
+         //socket.emit('add-user', {"username": ""});
+        socket.emit('add-user');
+       //   function soc(){
+       var  data= socket.on("add header message", function(data){
+        $('#messages').append($('<li>').text(data));
+		globaldata=data;
+		$('#demo').val(data);
+		init(data);
+      });
+        
+        
+        socket.on('ping', function(data){
+      socket.emit('pong', {beat: 1});
+            
+    });
+
+       
+        
+      socket.on("add-message", function(data){
+              $('#messages').append($('<li>').text(data));
+            var Splitstring = data.split("<::>");
+            var win = Splitstring[0];
+            var tok = Splitstring[1];
+            var winNumber = win.split(":")[1];
+            var tokNumber = tok.split(":")[1];
+            insertToDB(winNumber , tokNumber)
+             console.log("messages "+text(data) +"\n");
+      });
+	  
+    </script>
+
+
+  </body>
+</html>
